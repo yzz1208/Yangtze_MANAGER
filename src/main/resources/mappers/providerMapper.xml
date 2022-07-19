@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--namespace = 所需实现的接口全限定名-->
+<mapper namespace="com.yyz.Yangtze_MANAGER.mapper.ProviderMapper" >
+    <insert id="add" parameterType="com.yyz.Yangtze_MANAGER.entity.Provider">
+        insert into smbms_provider (proCode,proName,proDesc,proContact,proPhone,proAddress,proFax,createdBy,
+                                    creationDate,modifyBy,modifyDate,companyLicPicPath,orgCodePicPath)
+        values (#{proCode},#{proName},#{proDesc},#{proContact},#{proPhone},#{proAddress},#{proFax},#{createdBy},
+                #{creationDate},#{modifyBy},#{modifyDate},#{companyLicPicPath},#{orgCodePicPath})
+    </insert>
+    <!--修改供应商-->
+    <update id="modify" parameterType="com.yyz.Yangtze_MANAGER.entity.Provider">
+        update smbms_provider
+        <trim prefix="set" suffixOverrides="," suffix="where id = #{id}">
+            <if test ="proCode !=null"> proCode=#{proCode},</if>
+            <if test ="proName !=null"> proName=#{proName},</if>
+            <if test ="proDesc !=null"> proDesc=#{proDesc},</if>
+            <if test ="proContact !=null"> proContact=#{proContact},</if>
+            <if test ="proAddress !=null"> proAddress=#{proAddress},</if>
+            <if test ="proFax !=null"> proFax=#{proFax},</if>
+            <if test ="companyLicPicPath !=null"> companyLicPicPath=#{companyLicPicPath},</if>
+            <if test ="orgCodePicPath !=null"> orgCodePicPath=#{orgCodePicPath},</if>
+            <if test ="modifyBy !=null"> modifyBy=#{modifyBy},</if>
+            <if test ="modifyDate !=null"> modifyDate=#{modifyDate},</if>
+        </trim>
+    </update>
+    <!--删除供应商-->
+    <delete id="deleteProviderById" parameterType="integer">
+        delete from smbms_provider where id = #{id}
+    </delete>
+
+    <!--查询总记录数-->
+    <select id="getTotalCount" resultType="java.lang.Integer">
+        select count(*) from smbms_provider
+        <where>
+            <if test="queryProName !=null">
+                and proName like CONCAT('%',#{queryProName},'%')
+            </if>
+            <if test="queryProCode!=null">
+                and proCode like CONCAT('%',#{queryProCode},'%')
+            </if>
+        </where>
+    </select>
+<!--    查询用户列表-->
+    <resultMap id="proList" type="com.yyz.Yangtze_MANAGER.entity.Provider">
+        <result property="id" column="id"/>
+        <result property="proCode" column="proCode"/>
+        <result property="proName" column="proName"/>
+        <result property="proDesc" column="proDesc"/>
+        <result property= "proContact" column="proContact"/>
+        <result property="proFax" column="proFax"/>
+        <result property="createdBy" column="createdBy"/>
+        <result property="creationDate" column="creationDate"/>
+    </resultMap>
+    <select id="getProList" resultMap="proList">
+        select *  from smbms_provider
+        <where>
+            <if test="proName !=null">
+                and proName like CONCAT('%',#{proName},'%')
+            </if>
+            <if test="proCode!=null">
+                and proCode like CONCAT('%',#{proCode},'%')
+            </if>
+        </where>
+        order by creationDate desc limit #{currentPageNo},#{pageSize}
+    </select>
+    <select id="getProviderById" resultType="com.yyz.Yangtze_MANAGER.entity.Provider">
+        select * from smbms_provider where id=#{id};
+    </select>
+
+    <select id="getProviderList" resultType="com.yyz.Yangtze_MANAGER.entity.Provider">
+        select id,proCode,proName from smbms_provider;
+    </select>
+</mapper>

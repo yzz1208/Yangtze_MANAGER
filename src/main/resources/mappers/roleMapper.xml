@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--namespace = 所需实现的接口全限定名-->
+<mapper namespace="com.yyz.Yangtze_MANAGER.mapper.RoleMapper">
+    <!--新增角色-->
+    <insert id="addRoel" parameterType="com.yyz.Yangtze_MANAGER.entity.Role">
+        insert into cjdx_role(roleCode,roleName,createdBy,creationDate)
+                        values(#{roleCode},#{roleName},#{createdBy},#{creationDate})
+    </insert>
+    <!--更新角色-->
+    <update id="updateRoel" parameterType="com.yyz.Yangtze_MANAGER.entity.Role">
+        update cjdx_role
+        <trim prefix="set" suffixOverrides="," suffix="where id = #{id}">
+            <if test ="roleCode !=null"> roelCode=#{roelCode},</if>
+            <if test ="roleName !=null"> roleName=#{roleName},</if>
+            <if test ="createdBy !=null"> createdBy=#{createdBy},</if>
+            <if test ="creationDate !=null"> creationDate=#{creationDate},</if>
+            <if test ="modifyBy !=null"> modifyBy=#{modifyBy},</if>
+            <if test ="modifyDate !=null"> modifyDate=#{modifyDate},</if>
+        </trim>
+    </update>
+    <!--删除角色-->
+    <delete id="deleteRoleById" parameterType="integer">
+        delete from cjdx_role where id=#{id};
+    </delete>
+
+    <select id="getRoleList" resultType="com.yyz.Yangtze_MANAGER.entity.Role">
+        select id,roleCode,roleName from cjdx_role
+    </select>
+    <select id="getAllRoleList" resultType="com.yyz.Yangtze_MANAGER.entity.Role">
+        select * from cjdx_role;
+    </select>
+    <!--校验 -->
+    <select id="getRoelById" resultType="com.yyz.Yangtze_MANAGER.entity.Role">
+        select * from cjdx_role where roleCode=#{roleCode};
+    </select>
+    <select id="getRoleById2" resultType="com.yyz.Yangtze_MANAGER.entity.Role">
+        select * from cjdx_role where id=#{id};
+    </select>
+</mapper>

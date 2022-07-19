@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--namespace = 所需实现的接口全限定名-->
+<mapper namespace="com.yyz.Yangtze_MANAGER.mapper.BillMapper">
+    <select id="getBillList" resultMap="billList">
+        select u.*,r.proName from smbms_bill u,smbms_provider r where u.providerId=r.id
+        <if test="queryProductName != null"> and u.productName like CONCAT('%',#{queryProductName},'%') </if>
+        <if test="queryProviderId != null"> and u.providerId=#{queryProviderId} </if>
+        <if test="queryIsPayment != null"> and u.isPayment=#{queryIsPayment} </if>
+        order by u.id desc limit #{currentPageNo},#{pageSize}
+    </select>
+    <resultMap id="billList" type="com.yyz.Yangtze_MANAGER.entity.Bill">
+        <result property="id" column="id"/>
+        <result property="billCode" column="billCode"/>
+        <result property="providerName" column="proName"/>
+        <result property="totalPrice" column="totalPrice"/>
+        <result property="isPayment" column="isPayment"/>
+        <result property="creationDate" column="creationDate"/>
+    </resultMap>
+    <select id="getTotalCount" resultType="int">
+        select count(1) from smbms_bill u ,smbms_provider r where u.providerId=r.id
+        <if test="queryProviderId != null"> and u.providerId=#{queryProviderId} </if>
+        <if test="queryProductName != null"> and u.productName like CONCAT('%',#{queryProductName},'%') </if>
+    </select>
+    <!-- 添加保存订单 -->
+    <insert id="add" parameterType="com.yyz.Yangtze_MANAGER.entity.Bill"> insert into smbms_bill(billCode,productName,productUnit, productCount,totalPrice,providerId,isPayment,creationDate,createdBy) values (#{billCode},#{productName},#{productUnit}, #{productCount},#{totalPrice},#{providerId},#{isPayment},#{creationDate},#{createdBy}) </insert>
+    <!-- 修改回显  resultType="com.yyz.Yangtze_MANAGER.entity.Bill"-->
+    <select id="getBillById" resultMap="billList"> select * ,r.proName  from smbms_bill as u,smbms_provider as r where u.id=#{id} and u.providerId=r.id </select>
+    <!-- 修改订单 -->
+    <update id="modify" parameterType="com.yyz.Yangtze_MANAGER.entity.Bill">
+        update smbms_bill
+        <trim prefix="set" suffixOverrides="," suffix="where id = #{id}">
+            <if test="billCode !=null"> billCode=#{billCode},</if>
+            <if test="productName !=null"> productName=#{productName},</if>
+            <if test="productUnit !=null"> productUnit=#{productUnit},</if>
+            <if test="productCount !=null"> productCount=#{productCount},</if>
+            <if test="totalPrice !=null"> totalPrice=#{totalPrice},</if>
+            <if test="providerId !=null"> providerId=#{providerId},</if>
+            <if test="isPayment !=null"> isPayment=#{isPayment},</if>
+        </trim>
+    </update>
+    <!-- 删除订单 -->
+    <delete id="deleteBill" parameterType="Integer"> delete from smbms_bill where id = #{id} </delete>
+</mapper>
